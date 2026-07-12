@@ -38,10 +38,12 @@ const UserProvider = ({ children }: UserProviderProps) => {
     const loadUser = async () => {
       try {
         const { data } = await getMe();
-        console.log("loaduser running", data);
+        // console.log("me data is", data);
+        // console.log("loaduser running", data);
         setUser(data.user);
       } catch (err) {
         setUser(null);
+        console.error(error);
       } finally {
         setLoading(false);
       }

@@ -1,0 +1,14 @@
+--animate-fade-in
+--animate-scale-up
+--color-border-subtle
+--color-gray-text
+--color-primary
+--color-primary-hover
+--color-secondary
+--color-secondary-hover
+--color-surface-container
+--color-surface-off
+--font-mono
+--font-sans
+--shadow-ambient
+--shadow-ambient-lg
