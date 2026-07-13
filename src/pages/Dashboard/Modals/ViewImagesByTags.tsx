@@ -1,55 +1,73 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Modal from "../../../components/Modal";
 import InputComponent from "../../../components/InputComponent";
-import { useAppDispatch } from "../../../hooks/albumHooks";
-import { updateAlbumAsync } from "../album";
 import useDelay from "../../../hooks/delayHook";
-import {
-  showToastError,
-  showToastSuccess,
-} from "../../../ToastServices/toastService";
-interface UpdateAlbumProps {
+import { showToastError } from "../../../ToastServices/toastService";
+import { useNavigate } from "react-router-dom";
+
+interface ViewImagesByTagsProps {
+  albumId: string;
+  name: string;
   isOpen: boolean;
   onClose: () => void;
-  albumName: string;
-  albumId: string;
-  desc: string;
+  description?: string;
+  sharedWith?: string[];
+  isOwner?: boolean;
+  id: string;
 }
 
-const UpdateAlbumModel: React.FC<UpdateAlbumProps> = ({
+const ViewImagesByTags: React.FC<ViewImagesByTagsProps> = ({
   isOpen,
   onClose,
-  albumName,
   albumId,
-  desc,
+  name,
+  description,
+  sharedWith,
+  isOwner,
+  id,
 }) => {
   const delay = useDelay();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [description, setDescription] = useState(desc);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    setDescription(desc);
-  }, [isOpen, desc]);
+  const [tagsInput, setTagsInput] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDescription(e.target.value);
+    setTagsInput(e.target.value);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!description.trim()) {
-      showToastError("Description cannot be empty");
+    if (!albumId) {
+      showToastError("Album ID not found");
+      return;
+    }
+
+    const tags = tagsInput
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0);
+
+    if (tags.length === 0) {
+      showToastError("Please enter at least one tag");
       return;
     }
 
     setLoading(true);
 
     try {
-      await dispatch(updateAlbumAsync({ albumId, description })).unwrap();
-      await delay(1000);
-      showToastSuccess("Album updated successfully");
+      navigate(`/dashboard/album/${albumId}`, {
+        state: {
+          type: "tags",
+          name,
+          description,
+          sharedWith,
+          tags,
+          isOwner,
+          id,
+        },
+      });
+      await delay(300);
       onClose();
     } catch (error) {
       showToastError(error as string);
@@ -60,6 +78,7 @@ const UpdateAlbumModel: React.FC<UpdateAlbumProps> = ({
 
   const handleClose = () => {
     if (!loading) {
+      setTagsInput("");
       onClose();
     }
   };
@@ -68,17 +87,17 @@ const UpdateAlbumModel: React.FC<UpdateAlbumProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      title="Update Album Description"
-      subtitle={`Editing "${albumName}"`}
+      title={`View ${name} Images by Tags`}
+      subtitle="Enter tags separated by commas"
       size="md"
       closeOnBackdropClick={!loading}
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         <InputComponent
-          value={description}
+          value={tagsInput}
           onChange={handleChange}
-          name="description"
-          placeholder="Enter album description"
+          name="tags"
+          placeholder="e.g. Cars, nature, travel"
         />
 
         <div className="flex gap-3 justify-end">
@@ -95,7 +114,7 @@ const UpdateAlbumModel: React.FC<UpdateAlbumProps> = ({
             disabled={loading}
             className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {loading ? "Updating..." : "Update Description"}
+            {loading ? "Applying..." : "View Images"}
           </button>
         </div>
       </form>
@@ -103,4 +122,4 @@ const UpdateAlbumModel: React.FC<UpdateAlbumProps> = ({
   );
 };
 
-export default UpdateAlbumModel;
+export default ViewImagesByTags;

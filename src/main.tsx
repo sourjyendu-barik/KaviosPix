@@ -9,11 +9,11 @@ import { Provider } from "react-redux";
 createRoot(document.getElementById("root")!).render(
   // <StrictMode>
   <GoogleOAuthProvider clientId="318712121759-binm17mh9kqdsve7j8sro9phdhfv2hnb.apps.googleusercontent.com">
-    <UserProvider>
-      <Provider store={store}>
+    <Provider store={store}>
+      <UserProvider>
         <App />
-      </Provider>
-    </UserProvider>
+      </UserProvider>
+    </Provider>
   </GoogleOAuthProvider>,
   // {/* </StrictMode>, */}
 );

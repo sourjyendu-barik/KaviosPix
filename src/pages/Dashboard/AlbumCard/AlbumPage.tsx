@@ -1,88 +1,95 @@
 import React, { useState } from "react";
 import AlbumCard from "./AlbumCard";
-// import AddUsersInAlbum from "../AddUsersInAlbum";
-// import UpdateAlbum from "../UpdateAlbum";
-import { type AlbumDataType } from "../../../Types/types";
 import AddNewUserModal from "../Modals/AddNewUserModal";
 import UpdateAlbumModel from "../Modals/UpdateAlbumModel";
 import AddImageModal from "../../../components/AddImageModal";
+import { type AlbumDataType } from "../../../Types/types";
+import ViewImagesByTags from "../Modals/ViewImagesByTags";
+
+type ModalType = "share" | "update" | "addImage" | "tags" | null;
+
+interface SelectedAlbum {
+  id: string;
+  name: string;
+  description?: string;
+  users?: string[];
+  isOwner?: boolean;
+}
+
 interface AlbumsPageProps {
   albums: AlbumDataType[];
-  onViewDetails?: (albumId: string) => void;
 }
 
-interface SelectedAlbumForShare {
-  id: string;
-  name: string;
-  users: string[];
-}
-
-interface SelectedAlbumForUpdate {
-  id: string;
-  name: string;
-  description: string;
-}
-interface SelectedAlbumForAddImage {
-  id: string;
-  name: string;
-}
 const AlbumsPage: React.FC<AlbumsPageProps> = ({ albums }) => {
-  const [showAddUsersModal, setShowAddUsersModal] = useState(false);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [showAddImageModel, setShowAddImageModel] = useState(false);
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const [selectedAlbum, setSelectedAlbum] = useState<SelectedAlbum | null>(
+    null,
+  );
 
-  const [selectedAlbumForShare, setSelectedAlbumForShare] =
-    useState<SelectedAlbumForShare | null>(null);
-
-  const [selectedAlbumForUpdate, setSelectedAlbumForUpdate] =
-    useState<SelectedAlbumForUpdate | null>(null);
-
-  const [selectedAlbumForAddImage, setSelectedAlbumForAddImage] =
-    useState<SelectedAlbumForAddImage | null>(null);
-
+  // Share
   const handleAddUsersClick = (
     albumId: string,
     albumName: string,
     sharedWith: string[],
   ) => {
-    setSelectedAlbumForShare({
+    setSelectedAlbum({
       id: albumId,
       name: albumName,
       users: sharedWith,
     });
-    setShowAddUsersModal(true);
+
+    setActiveModal("share");
   };
 
+  // Update
   const handleUpdateClick = (
     albumId: string,
     albumName: string,
     description: string,
   ) => {
-    setSelectedAlbumForUpdate({ id: albumId, name: albumName, description });
-    setShowUpdateModal(true);
+    setSelectedAlbum({
+      id: albumId,
+      name: albumName,
+      description,
+    });
+
+    setActiveModal("update");
   };
+
+  // Add Image
   const handleAddImageClick = (albumId: string, name: string) => {
-    setSelectedAlbumForAddImage({ id: albumId, name: name });
-    setShowAddImageModel(true);
+    setSelectedAlbum({
+      id: albumId,
+      name,
+    });
+
+    setActiveModal("addImage");
   };
 
-  const handleCloseAddUsersModal = () => {
-    setShowAddUsersModal(false);
-    setSelectedAlbumForShare(null);
+  // Tags
+  const handleAddImagesByTags = (
+    albumId: string,
+    name: string,
+    isOwner: boolean,
+  ) => {
+    setSelectedAlbum({
+      id: albumId,
+      name,
+      isOwner,
+    });
+
+    setActiveModal("tags");
   };
 
-  const handleCloseUpdateModal = () => {
-    setShowUpdateModal(false);
-    setSelectedAlbumForUpdate(null);
+  // Close All Modals
+  const handleCloseModal = () => {
+    setActiveModal(null);
+    setSelectedAlbum(null);
   };
-  const handleCloseAddImageModal = () => {
-    setShowAddImageModel(false);
-    setSelectedAlbumForAddImage(null);
-  };
+
   return (
     <>
-      {/* Albums Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {albums.map((album, index) => (
           <AlbumCard
             key={album._id}
@@ -91,37 +98,54 @@ const AlbumsPage: React.FC<AlbumsPageProps> = ({ albums }) => {
             onAddUsersClick={handleAddUsersClick}
             onUpdateClick={handleUpdateClick}
             onAddImageClick={handleAddImageClick}
+            onTagsClick={handleAddImagesByTags}
           />
         ))}
       </div>
 
-      {/* Modals rendered once at top level */}
-      {selectedAlbumForShare && (
+      {/* Share Users */}
+      {activeModal === "share" && selectedAlbum && (
         <AddNewUserModal
-          isOpen={showAddUsersModal}
-          onClose={handleCloseAddUsersModal}
-          userList={selectedAlbumForShare.users}
-          albumId={selectedAlbumForShare.id}
-          albumName={selectedAlbumForShare.name}
+          isOpen={true}
+          onClose={handleCloseModal}
+          albumId={selectedAlbum.id}
+          albumName={selectedAlbum.name}
+          userList={selectedAlbum.users ?? []}
         />
       )}
 
-      {selectedAlbumForUpdate && (
+      {/* Update Album */}
+      {activeModal === "update" && selectedAlbum && (
         <UpdateAlbumModel
-          isOpen={showUpdateModal}
-          onClose={handleCloseUpdateModal}
-          albumId={selectedAlbumForUpdate.id}
-          albumName={selectedAlbumForUpdate.name}
-          desc={selectedAlbumForUpdate.description}
+          isOpen={true}
+          onClose={handleCloseModal}
+          albumId={selectedAlbum.id}
+          albumName={selectedAlbum.name}
+          desc={selectedAlbum.description ?? ""}
         />
       )}
 
-      {selectedAlbumForAddImage && (
+      {/* Add Image */}
+      {activeModal === "addImage" && selectedAlbum && (
         <AddImageModal
-          isOpen={showAddImageModel}
-          onClose={handleCloseAddImageModal}
-          albumId={selectedAlbumForAddImage.id}
-          name={selectedAlbumForAddImage.name}
+          isOpen={true}
+          onClose={handleCloseModal}
+          albumId={selectedAlbum.id}
+          name={selectedAlbum.name}
+        />
+      )}
+
+      {/* Tags Modal */}
+      {activeModal === "tags" && selectedAlbum && (
+        <ViewImagesByTags
+          albumId={selectedAlbum.id}
+          name={selectedAlbum.name}
+          description={selectedAlbum.description}
+          isOpen={true}
+          onClose={handleCloseModal}
+          sharedWith={selectedAlbum.users}
+          isOwner={selectedAlbum.isOwner}
+          id={selectedAlbum.id}
         />
       )}
     </>

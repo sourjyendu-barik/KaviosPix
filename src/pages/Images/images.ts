@@ -1,5 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addImage } from "../../api";
+import {
+  addImage,
+  viewImagesOfAlbum,
+  viewFavoriteImagesOfAlBum,
+  viewImagesByTags,
+  toggleFavoriteImage,
+  deleteImage,
+  addCommentToImage,
+} from "../../api";
 import { type AddImageProps } from "../../Types/types";
 
 type Status = "idle" | "loading" | "success" | "error";
@@ -16,7 +24,8 @@ const initialState: ImageState = {
   status: "idle",
 };
 
-// Add Image
+// ---- Thunks ----
+
 export const addImageAsync = createAsyncThunk(
   "images/addImage",
   async (payload: AddImageProps, { rejectWithValue }) => {
@@ -30,12 +39,126 @@ export const addImageAsync = createAsyncThunk(
     }
   },
 );
+
+export const fetchAllImagesAsync = createAsyncThunk(
+  "images/fetchAll",
+  async (albumId: string, { rejectWithValue }) => {
+    try {
+      const response = await viewImagesOfAlbum(albumId);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Something Went Wrong",
+      );
+    }
+  },
+);
+
+export const fetchFavoriteImagesAsync = createAsyncThunk(
+  "images/fetchFavorites",
+  async (albumId: string, { rejectWithValue }) => {
+    try {
+      const response = await viewFavoriteImagesOfAlBum(albumId);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Something Went Wrong",
+      );
+    }
+  },
+);
+
+export const fetchImagesByTagsAsync = createAsyncThunk(
+  "images/fetchByTags",
+  async (
+    { albumId, tags }: { albumId: string; tags: string[] },
+    { rejectWithValue },
+  ) => {
+    try {
+      const response = await viewImagesByTags(albumId, tags);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Something Went Wrong",
+      );
+    }
+  },
+);
+
+export const toggleFavoriteImageAsync = createAsyncThunk(
+  "images/toggleFavorite",
+  async (
+    {
+      albumId,
+      imageId,
+      isFavorite,
+    }: { albumId: string; imageId: string; isFavorite: boolean },
+    { rejectWithValue },
+  ) => {
+    try {
+      const response = await toggleFavoriteImage(albumId, imageId, isFavorite);
+      return { imageId, data: response.data };
+    } catch (error: any) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Something Went Wrong",
+      );
+    }
+  },
+);
+
+export const deleteImageAsync = createAsyncThunk(
+  "images/deleteImage",
+  async (
+    { albumId, imageId }: { albumId: string; imageId: string },
+    { rejectWithValue },
+  ) => {
+    try {
+      await deleteImage(albumId, imageId);
+      return imageId;
+    } catch (error: any) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Something Went Wrong",
+      );
+    }
+  },
+);
+
+export const addCommentToImageAsync = createAsyncThunk(
+  "images/addComment",
+  async (
+    {
+      albumId,
+      imageId,
+      comment,
+    }: { albumId: string; imageId: string; comment: string },
+    { rejectWithValue },
+  ) => {
+    try {
+      const response = await addCommentToImage(albumId, imageId, comment);
+      return { imageId, data: response.data };
+    } catch (error: any) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Something Went Wrong",
+      );
+    }
+  },
+);
+
+// ---- Slice ----
+
 const imageSlice = createSlice({
   name: "images",
   initialState,
-  reducers: {},
+  reducers: {
+    clearImages: (state) => {
+      state.data = [];
+      state.status = "idle";
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
+      // Add image
       .addCase(addImageAsync.pending, (state) => {
         state.status = "loading";
       })
@@ -49,8 +172,79 @@ const imageSlice = createSlice({
           (action.payload as string) ||
           action.error.message ||
           "Something Went Wrong";
+      })
+
+      // Fetch all images
+      .addCase(fetchAllImagesAsync.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(fetchAllImagesAsync.fulfilled, (state, action) => {
+        state.status = "success";
+        state.data = action.payload?.data ?? [];
+      })
+      .addCase(fetchAllImagesAsync.rejected, (state, action) => {
+        state.status = "error";
+        state.error =
+          (action.payload as string) ||
+          action.error.message ||
+          "Failed to fetch images";
+      })
+
+      // Fetch favorite images
+      .addCase(fetchFavoriteImagesAsync.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(fetchFavoriteImagesAsync.fulfilled, (state, action) => {
+        state.status = "success";
+        state.data = action.payload?.data ?? [];
+      })
+      .addCase(fetchFavoriteImagesAsync.rejected, (state, action) => {
+        state.status = "error";
+        state.error =
+          (action.payload as string) ||
+          action.error.message ||
+          "Failed to fetch favorite images";
+      })
+
+      // Fetch images by tags
+      .addCase(fetchImagesByTagsAsync.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(fetchImagesByTagsAsync.fulfilled, (state, action) => {
+        state.status = "success";
+        state.data = action.payload?.data ?? [];
+      })
+      .addCase(fetchImagesByTagsAsync.rejected, (state, action) => {
+        state.status = "error";
+        state.error =
+          (action.payload as string) ||
+          action.error.message ||
+          "Failed to fetch images by tags";
+      })
+
+      // Toggle favorite
+      .addCase(toggleFavoriteImageAsync.fulfilled, (state, action) => {
+        const { imageId } = action.payload;
+        const img = state.data.find((i: any) => i._id === imageId);
+        if (img) img.isFavorite = !img.isFavorite;
+      })
+
+      // Delete image
+      .addCase(deleteImageAsync.fulfilled, (state, action) => {
+        state.data = state.data.filter((i: any) => i._id !== action.payload);
+      })
+
+      // Add comment
+      .addCase(addCommentToImageAsync.fulfilled, (state, action) => {
+        const { imageId, data } = action.payload;
+        const img = state.data.find((i: any) => i._id === imageId);
+        if (img) img.comments = data?.data?.comments ?? img.comments;
       });
   },
 });
 
+export const { clearImages } = imageSlice.actions;
 export default imageSlice.reducer;

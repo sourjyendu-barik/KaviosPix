@@ -35,7 +35,10 @@ export const addUsersToAlbum = (albumId: string, emails: string[]) =>
 export const deleteAlbum = (albumId: string) =>
   api.delete(`/albums/${albumId}`);
 
-// types.ts already has AddImageProps — use it
+// =======================
+// Image APIs
+// =======================
+
 export const addImage = ({ albumId, imageData }: AddImageProps) => {
   const formData = new FormData();
   formData.append("image", imageData.image);
@@ -60,5 +63,34 @@ export const viewFavoriteImagesOfAlBum = (albumId: string) => {
 };
 
 export const viewImagesByTags = (albumId: string, tags: string[]) => {
-  return api.get(`/albums/${albumId}/`, { params: { tags: tags.join(" , ") } });
+  return api.get(`/albums/${albumId}/images/tags`, {
+    params: { tags: tags.join(",") },
+  });
+};
+
+// Add comment to an image
+export const addCommentToImage = (
+  albumId: string,
+  imageId: string,
+  comment: string,
+) => {
+  return api.post(`/albums/${albumId}/images/${imageId}/comments`, {
+    comment,
+  });
+};
+
+// Toggle favorite status of an image
+export const toggleFavoriteImage = (
+  albumId: string,
+  imageId: string,
+  isFavorite: boolean,
+) => {
+  return api.put(`/albums/${albumId}/images/${imageId}/favorite`, {
+    isFavorite,
+  });
+};
+
+// Delete image (albumId + imageId required)
+export const deleteImage = (albumId: string, imageId: string) => {
+  return api.delete(`/albums/${albumId}/images/${imageId}`);
 };

@@ -1,19 +1,22 @@
-//import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Star } from "lucide-react";
+import { type Image } from "../Types/types";
 
 interface ImageCardProps {
-  image: {
-    _id: string;
-    url: string;
-    name?: string;
-    isFavorite?: boolean;
-    tags?: [] | string[];
-  };
+  image: Image;
+  isOwner: boolean;
 }
 
-const ImageCard = ({ image }: ImageCardProps) => {
+const ImageCard = ({ image, isOwner }: ImageCardProps) => {
+  const navigate = useNavigate();
   const handleFavoriteClick = () => {};
-  const onDetailClick = () => {};
+  const onDetailClick = () => {
+    navigate("/album/imageDetails", {
+      state: {
+        data: image,
+      },
+    });
+  };
 
   return (
     <div className="rounded-2xl overflow-hidden bg-white shadow-sm">
@@ -24,7 +27,6 @@ const ImageCard = ({ image }: ImageCardProps) => {
           alt={image.name || "Album Image"}
           className="w-full h-56 object-cover block"
         />
-
         <button
           onClick={handleFavoriteClick}
           aria-label="Toggle favorite"
@@ -49,19 +51,20 @@ const ImageCard = ({ image }: ImageCardProps) => {
               {image.name}
             </div>
           )}
-          {image.tags && (
+          {image.comments && (
             <div className="text-xs text-blue-500 uppercase tracking-wide mt-0.5">
               {image.tags.join(" , ")}
             </div>
           )}
         </div>
-
-        <button
-          onClick={() => onDetailClick}
-          className="bg-gray-900 text-white rounded-full px-4 py-2 text-xs font-medium"
-        >
-          Detail
-        </button>
+        {isOwner && (
+          <button
+            onClick={() => onDetailClick()}
+            className="bg-gray-900 text-white rounded-full px-4 py-2 text-xs font-medium"
+          >
+            Detail
+          </button>
+        )}
       </div>
     </div>
   );

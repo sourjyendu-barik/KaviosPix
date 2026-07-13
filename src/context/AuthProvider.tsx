@@ -5,9 +5,9 @@ import {
   useState,
   useEffect,
 } from "react";
-
 import { type User } from "../Types/types";
 import { getMe, logoutUser } from "../api";
+import { useAppDispatch } from "../hooks/albumHooks";
 interface UserProviderProps {
   children: ReactNode;
 }
@@ -33,6 +33,7 @@ const UserProvider = ({ children }: UserProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
   //console.log(user);
   useEffect(() => {
     const loadUser = async () => {
@@ -58,6 +59,7 @@ const UserProvider = ({ children }: UserProviderProps) => {
     } catch (err) {
       console.error(err);
     } finally {
+      dispatch({ type: "RESET_STORE" });
       setUser(null);
       setError(null);
       setLoading(false);

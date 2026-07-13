@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   type AlbumInputDataType,
-  type updateAlbumProps,
-  type addUsersToAlbumProps,
+  type UpdateAlbumProps,
+  type AddUsersToAlbumProps,
   type AlbumDataType,
 } from "../../Types/types";
 import {
@@ -66,7 +66,7 @@ export const removeAlbumAsyn = createAsyncThunk(
 //update album
 export const updateAlbumAsync = createAsyncThunk(
   "albums/updateAlbum",
-  async ({ albumId, description }: updateAlbumProps, { rejectWithValue }) => {
+  async ({ albumId, description }: UpdateAlbumProps, { rejectWithValue }) => {
     try {
       const response = await updateAlbum(albumId, description);
       return response.data;
@@ -80,7 +80,7 @@ export const updateAlbumAsync = createAsyncThunk(
 //share album
 export const shareAlbumAsyn = createAsyncThunk(
   "albums/shareAlbum",
-  async ({ albumId, emails }: addUsersToAlbumProps, { rejectWithValue }) => {
+  async ({ albumId, emails }: AddUsersToAlbumProps, { rejectWithValue }) => {
     try {
       const response = await addUsersToAlbum(albumId, emails);
       return response.data;

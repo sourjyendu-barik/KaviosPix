@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAlbumDispatch, useAlbumSelector } from "../../hooks/albumHooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/albumHooks";
 import { fetchAlbumsAsyn } from "./album";
 import DashBoardFilter from "./DashboardSections/DashBoardFilter";
 import AlbumsPage from "./AlbumCard/AlbumPage";
@@ -8,8 +8,8 @@ import Loader from "../../components/Loader";
 type FilterTab = "all" | "personal" | "shared";
 
 export default function AlbumList() {
-  const dispatch = useAlbumDispatch();
-  const { data, status, error } = useAlbumSelector((state) => state.albums);
+  const dispatch = useAppDispatch();
+  const { data, status, error } = useAppSelector((state) => state.albums);
 
   useEffect(() => {
     if (data.length === 0) {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Modal from "../../../components/Modal";
 import InputComponent from "../../../components/InputComponent";
-import { useAlbumDispatch } from "../../../hooks/albumHooks";
+import { useAppDispatch } from "../../../hooks/albumHooks";
 import { addAlbumAsync } from "../album";
 import { type AlbumInputDataType } from "../../../Types/types";
 import {
@@ -18,7 +18,7 @@ const AddNewAlbumModal: React.FC<AddAlbumModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const dispatch = useAlbumDispatch();
+  const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const [albumData, setAlbumData] = useState<AlbumInputDataType>({
     name: "",

@@ -5,5 +5,5 @@ import {
 } from "react-redux";
 import type { RootState, AppDispatch } from "../store/app";
 
-export const useAlbumDispatch = () => useDispatch<AppDispatch>();
-export const useAlbumSelector: TypedUseSelectorHook<RootState> = useSelector;
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

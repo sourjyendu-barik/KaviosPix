@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Modal from "../../../components/Modal";
 import SelectUsers from "../../../components/SelectUsers";
-import { useAlbumDispatch } from "../../../hooks/albumHooks";
+import { useAppDispatch } from "../../../hooks/albumHooks";
 import { shareAlbumAsyn } from "../album";
 import {
   showToastError,
@@ -23,7 +23,7 @@ const AddNewUserModal: React.FC<AddUsersInAlbumProps> = ({
   albumId,
   albumName,
 }) => {
-  const dispatch = useAlbumDispatch();
+  const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
 
