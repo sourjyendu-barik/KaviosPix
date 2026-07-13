@@ -1,7 +1,8 @@
 import axios from "axios";
 import { type AlbumInputDataType, type AddImageProps } from "./Types/types";
 const api = axios.create({
-  baseURL: "http://localhost:4000",
+  // baseURL: "http://localhost:4000",
+  baseURL: "https://kavio-px-backend.vercel.app",
   withCredentials: true,
 });
 
