@@ -6,14 +6,14 @@ A modern image gallery frontend where users can authenticate with Google, create
 
 ## Demo Link
 
-[Live Demo](https://your-frontend-url.vercel.app)
+[Live Demo](https://kavios-pix-nine.vercel.app)
 
 ---
 
 ## Quick Start
 
 ```bash
-git clone https://github.com/<username>/kaviospix-frontend.git
+git clone https://github.com/sourjyendu-barik/KaviosPix.git
 cd kaviospix-frontend
 npm install
 npm run dev
