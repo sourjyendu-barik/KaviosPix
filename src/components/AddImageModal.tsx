@@ -155,6 +155,7 @@ const AddImageModal: React.FC<AddImageModalProps> = ({
           name="tags"
           value={imageData.tags}
           onChange={handleChange}
+          required
         />
 
         <label className="flex items-center gap-2">
