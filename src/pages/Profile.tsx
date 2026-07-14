@@ -37,6 +37,9 @@ export default function ProfilePage() {
     await deleteUserDetails();
     setUserDetails(null);
   };
+  const date = user?.joined
+    ? new Date(user.joined).toLocaleDateString()
+    : "Unknown";
   return (
     // change the outer wrapper
     <div className="min-h-screen bg-white py-2">
@@ -147,9 +150,7 @@ export default function ProfilePage() {
                     <p className="text-[11px] uppercase tracking-wide text-neutral-500">
                       Member Since
                     </p>
-                    <p className="font-semibold text-white truncate">
-                      {"date"}
-                    </p>
+                    <p className="font-semibold text-white truncate">{date}</p>
                   </div>
                 </div>
 

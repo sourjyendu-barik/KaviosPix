@@ -3,6 +3,7 @@ export type User = {
   name: string;
   email: string;
   profilePicture: string;
+  joined: string;
 };
 
 export interface UserProfile extends User {
