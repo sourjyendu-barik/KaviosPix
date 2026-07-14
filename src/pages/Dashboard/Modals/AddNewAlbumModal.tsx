@@ -8,7 +8,10 @@ import {
   showToastError,
   showToastSuccess,
 } from "../../../ToastServices/toastService";
-
+import {
+  validateAlbumName,
+  validateDescription,
+} from "../../../utils/validators";
 interface AddAlbumModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -36,16 +39,19 @@ const AddNewAlbumModal: React.FC<AddAlbumModalProps> = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!albumData.name.trim()) {
-      showToastError("Album name is required");
+    const nameError = validateAlbumName(albumData.name);
+
+    if (nameError) {
+      showToastError(nameError);
       return;
     }
 
-    if (albumData.name.trim().length < 3) {
-      showToastError("Album name must be at least 3 characters");
+    const descriptionError = validateDescription(albumData.description);
+
+    if (descriptionError) {
+      showToastError(descriptionError);
       return;
     }
-
     setLoading(true);
 
     try {

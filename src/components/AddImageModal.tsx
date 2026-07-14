@@ -7,7 +7,11 @@ import {
 } from "../ToastServices/toastService";
 import { useImageDispatch } from "../hooks/imageHooks";
 import { addImageAsync } from "../pages/Images/images";
-
+import {
+  validatePerson,
+  validateTags,
+  validateImage,
+} from "../utils/validators";
 interface AddImageModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -60,8 +64,24 @@ const AddImageModal: React.FC<AddImageModalProps> = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!imageData.file) {
-      showToastError("Please select an image");
+    const imageError = validateImage(imageData.file);
+
+    if (imageError) {
+      showToastError(imageError);
+      return;
+    }
+
+    const personError = validatePerson(imageData.person);
+
+    if (personError) {
+      showToastError(personError);
+      return;
+    }
+
+    const tagsError = validateTags(imageData.tags);
+
+    if (tagsError) {
+      showToastError(tagsError);
       return;
     }
 
@@ -72,7 +92,7 @@ const AddImageModal: React.FC<AddImageModalProps> = ({
         addImageAsync({
           albumId,
           imageData: {
-            image: imageData.file,
+            image: imageData.file!,
             tags: imageData.tags,
             person: imageData.person,
             isFavorite: imageData.isFavorite,

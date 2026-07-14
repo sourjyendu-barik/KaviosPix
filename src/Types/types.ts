@@ -99,3 +99,20 @@ export interface AddImageProps {
   albumId: string;
   imageData: ImageInputDataType;
 }
+
+//userdetailes
+export interface UserDetails {
+  _id?: string;
+  userId?: string;
+  location?: string;
+  role?: "user" | "admin" | "moderator";
+  about?: string;
+  hobbies?: string[];
+}
+
+export interface UserDetailsForm {
+  location: string;
+  about: string;
+  hobbies: string;
+  role: "user" | "admin" | "moderator";
+}

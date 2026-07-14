@@ -8,6 +8,7 @@ import {
   showToastError,
   showToastSuccess,
 } from "../../../ToastServices/toastService";
+import { validateDescription } from "../../../utils/validators";
 interface UpdateAlbumProps {
   isOpen: boolean;
   onClose: () => void;
@@ -38,9 +39,9 @@ const UpdateAlbumModel: React.FC<UpdateAlbumProps> = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (!description.trim()) {
-      showToastError("Description cannot be empty");
+    const descriptionError = validateDescription(description);
+    if (descriptionError) {
+      showToastError(descriptionError);
       return;
     }
 

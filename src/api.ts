@@ -1,5 +1,9 @@
 import axios from "axios";
-import { type AlbumInputDataType, type AddImageProps } from "./Types/types";
+import {
+  type AlbumInputDataType,
+  type AddImageProps,
+  type UserDetails,
+} from "./Types/types";
 const api = axios.create({
   // baseURL: "http://localhost:4000",
   baseURL: "https://kavio-px-backend.vercel.app",
@@ -95,3 +99,15 @@ export const toggleFavoriteImage = (
 export const deleteImage = (albumId: string, imageId: string) => {
   return api.delete(`/albums/${albumId}/images/${imageId}`);
 };
+
+// USER DETAILS
+
+export const createUserDetails = (payload: UserDetails) =>
+  api.post("/details/user-details", payload);
+
+export const getUserDetails = () => api.get("/details/user-details");
+
+export const updateUserDetails = (payload: UserDetails) =>
+  api.put("/details/user-details", payload);
+
+export const deleteUserDetails = () => api.delete("/details/user-details");

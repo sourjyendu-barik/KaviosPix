@@ -3,244 +3,214 @@ import {
   Calendar,
   Mail,
   Award,
-  Activity,
-  Image as ImageIcon,
-  Layers,
   Heart,
-  Sparkles,
   LogOut,
+  PlusCircle,
+  Pencil,
+  Trash2,
 } from "lucide-react";
 import { useUserContext } from "../context/AuthProvider";
+import { useState } from "react";
+import UserDetailsModal from "../components/UserDetailsModal";
+import { deleteUserDetails } from "../api";
+import { type UserDetails } from "../Types/types";
 
 export default function ProfilePage() {
-  const { user, logout } = useUserContext();
-  const profile = {
-    name: user?.name,
-    email: user?.email,
-    location: "New York, USA",
-    joinedDate: "January 2024",
-    avatarUrl: user?.profilePicture,
-    bio: "Landscape photographer and travel enthusiast. Passionate about capturing nature and creating beautiful visual stories.",
-    hobbies: ["Photography", "Travel", "Hiking", "Cycling"],
-
-    totalPhotos: 120,
-    totalAlbums: 10,
-    sharedPhotos: 48,
-    sharedAlbums: 4,
-
-    albums: [
-      {
-        id: 1,
-        title: "Nature Collection",
-        photoCount: 32,
-        isShared: true,
-        coverUrl:
-          "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=200&q=80",
-      },
-      {
-        id: 2,
-        title: "City Lights",
-        photoCount: 18,
-        isShared: false,
-        coverUrl:
-          "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=200&q=80",
-      },
-      {
-        id: 3,
-        title: "Mountains",
-        photoCount: 45,
-        isShared: true,
-        coverUrl:
-          "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=200&q=80",
-      },
-      {
-        id: 4,
-        title: "Beach Days",
-        photoCount: 25,
-        isShared: false,
-        coverUrl:
-          "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=200&q=80",
-      },
-    ],
+  const { user, logout, userDetails, setUserDetails } = useUserContext();
+  const [showModal, setShowModal] = useState(false);
+  const [selectedDetails, setSelectedDetails] = useState<
+    UserDetails | undefined
+  >();
+  const handleAddDetails = async () => {
+    setSelectedDetails(undefined);
+    setShowModal(true);
   };
 
+  const handleUpdateDetails = async () => {
+    if (!userDetails) return;
+    setSelectedDetails(userDetails);
+    setShowModal(true);
+  };
+
+  const handleDeleteDetails = async () => {
+    if (!userDetails?._id) return;
+    await deleteUserDetails();
+    setUserDetails(null);
+  };
   return (
-    <div className="space-y-10 py-2">
-      {/* Hero */}
-      <div className="relative h-60 overflow-hidden rounded-3xl bg-neutral-900 text-white">
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-40"
-          style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80')",
-          }}
-        />
-
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-        <button
-          onClick={() => logout()}
-          className="absolute top-6 right-6 flex items-center gap-2 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-lg transition hover:bg-red-700"
-        >
-          <LogOut size={18} />
-          Logout
-        </button>
-        <div className="absolute bottom-8 left-8 flex items-end gap-5">
-          <img
-            src={profile.avatarUrl}
-            alt={profile.name}
-            className="w-28 h-28 rounded-2xl object-cover border-4 border-white"
-          />
-
-          <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-black">{profile.name}</h1>
-
-              <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
-                <Award size={12} />
-                Curated Creator
-              </span>
+    // change the outer wrapper
+    <div className="min-h-screen bg-white py-2">
+      <div className="max-w-3xl mx-auto px-4 space-y-6">
+        {/* Profile Card */}
+        <div className="rounded-2xl bg-neutral-900 border border-neutral-800/60 shadow-xl shadow-black/40 text-white p-6 sm:p-8">
+          <div className="flex flex-col items-center text-center gap-3">
+            <div className="relative">
+              {user?.profilePicture && (
+                <img
+                  src={user.profilePicture}
+                  alt={user?.name}
+                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover"
+                />
+              )}
+              <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-green-500 border-2 border-neutral-900" />
             </div>
 
-            <p className="text-neutral-300">{profile.email}</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid lg:grid-cols-12 gap-8">
-        {/* Left */}
-        <div className="lg:col-span-7 space-y-8">
-          <div className="bg-white rounded-3xl border p-8 space-y-6">
-            <div className="grid md:grid-cols-2 gap-5">
-              <div className="bg-gray-50 rounded-2xl p-4 flex gap-3">
-                <MapPin className="text-blue-600" />
-                <div>
-                  <p className="text-xs text-gray-500">Location</p>
-                  <p className="font-semibold">{profile.location}</p>
-                </div>
-              </div>
-
-              <div className="bg-gray-50 rounded-2xl p-4 flex gap-3">
-                <Mail className="text-blue-600" />
-                <div>
-                  <p className="text-xs text-gray-500">Email</p>
-                  <p className="font-semibold">{profile.email}</p>
-                </div>
-              </div>
-
-              <div className="bg-gray-50 rounded-2xl p-4 flex gap-3">
-                <Calendar className="text-blue-600" />
-                <div>
-                  <p className="text-xs text-gray-500">Member Since</p>
-                  <p className="font-semibold">{profile.joinedDate}</p>
-                </div>
-              </div>
-
-              <div className="bg-gray-50 rounded-2xl p-4 flex gap-3">
-                <Award className="text-blue-600" />
-                <div>
-                  <p className="text-xs text-gray-500">Role</p>
-                  <p className="font-semibold">Workspace Admin</p>
-                </div>
-              </div>
+            <div className="flex items-center gap-2 flex-wrap justify-center">
+              <h1 className="text-lg sm:text-xl font-bold">{user?.name}</h1>
             </div>
+            <p className="text-neutral-400 text-sm break-all">{user?.email}</p>
 
-            <div>
-              <h3 className="text-sm font-bold mb-2">Biography</h3>
-              <p className="text-gray-600 leading-relaxed">{profile.bio}</p>
-            </div>
-
-            <div>
-              <h3 className="text-sm font-bold mb-3">Hobbies</h3>
-
-              <div className="flex flex-wrap gap-2">
-                {profile.hobbies.map((hobby) => (
-                  <span
-                    key={hobby}
-                    className="bg-gray-100 px-3 py-1 rounded-full text-sm flex items-center gap-1"
-                  >
-                    <Heart size={12} className="text-blue-600 fill-blue-600" />
-                    {hobby}
-                  </span>
-                ))}
-              </div>
+            <div className="flex flex-col sm:flex-row items-center gap-3 mt-3 w-full sm:w-auto">
+              <button
+                onClick={() => logout()}
+                className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700"
+              >
+                <LogOut size={16} />
+                Logout
+              </button>
             </div>
           </div>
         </div>
+        {/* Details Card */}
+        <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-5 sm:p-7 space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="font-bold text-lg text-white">User Details</h2>
 
-        {/* Right */}
-        <div className="lg:col-span-5 space-y-8">
-          <div className="bg-white rounded-3xl border p-8">
-            <div className="flex items-center gap-2 mb-6">
-              <Activity className="text-blue-600" />
-              <h2 className="font-bold text-lg">Creative Metrics</h2>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div className="bg-gray-50 rounded-2xl p-4 text-center">
-                <ImageIcon className="mx-auto text-blue-600 mb-2" />
-                <p className="text-2xl font-black">{profile.totalPhotos}</p>
-                <p className="text-xs text-gray-500">Photos</p>
-              </div>
-
-              <div className="bg-gray-50 rounded-2xl p-4 text-center">
-                <Layers className="mx-auto text-blue-600 mb-2" />
-                <p className="text-2xl font-black">{profile.totalAlbums}</p>
-                <p className="text-xs text-gray-500">Albums</p>
-              </div>
-
-              <div className="bg-gray-50 rounded-2xl p-4 text-center">
-                <Sparkles className="mx-auto text-blue-600 mb-2" />
-                <p className="text-2xl font-black">{profile.sharedPhotos}</p>
-                <p className="text-xs text-gray-500">Shared</p>
-              </div>
-            </div>
-
-            <div className="mt-6 bg-blue-50 rounded-2xl p-4">
-              <p className="text-sm text-gray-600">
-                You are collaborating in <strong>{profile.sharedAlbums}</strong>{" "}
-                shared albums with <strong>{profile.sharedPhotos}</strong>{" "}
-                shared photos.
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-3xl border p-8">
-            <h2 className="font-bold text-lg mb-5">Portfolio Directory</h2>
-
-            <div className="space-y-3">
-              {profile.albums.map((album) => (
-                <div
-                  key={album.id}
-                  className="flex items-center gap-3 bg-gray-50 rounded-2xl p-3"
+            <div className="flex items-center gap-2">
+              {!userDetails ? (
+                <button
+                  onClick={handleAddDetails}
+                  title="Add details"
+                  className="flex items-center gap-1 rounded-xl bg-purple-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-purple-700"
                 >
-                  <img
-                    src={album.coverUrl}
-                    alt={album.title}
-                    className="w-12 h-12 rounded-xl object-cover"
-                  />
+                  <PlusCircle size={16} />
+                  Add
+                </button>
+              ) : (
+                <>
+                  <button
+                    onClick={handleUpdateDetails}
+                    title="Update details"
+                    className="flex items-center gap-1 rounded-xl bg-neutral-800 px-3 py-2 text-xs font-semibold text-neutral-200 transition hover:bg-neutral-700"
+                  >
+                    <Pencil size={16} />
+                    Update
+                  </button>
 
-                  <div className="flex-1">
-                    <p className="font-semibold">{album.title}</p>
-                    <p className="text-xs text-gray-500">
-                      {album.photoCount} photos
+                  <button
+                    onClick={handleDeleteDetails}
+                    title="Delete details"
+                    className="flex items-center gap-1 rounded-xl bg-red-950/50 px-3 py-2 text-xs font-semibold text-red-400 transition hover:bg-red-950"
+                  >
+                    <Trash2 size={16} />
+                    Delete
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+
+          {!userDetails ? (
+            <p className="text-sm text-neutral-500">
+              No details added yet. Click "Add" to create your profile details.
+            </p>
+          ) : (
+            <>
+              <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
+                <div className="bg-neutral-800/60 rounded-xl p-4 flex gap-3 min-w-0">
+                  <MapPin className="text-purple-400 shrink-0" size={20} />
+                  <div className="min-w-0">
+                    <p className="text-[11px] uppercase tracking-wide text-neutral-500">
+                      Location
+                    </p>
+                    <p className="font-semibold text-white truncate">
+                      {userDetails.location || "—"}
                     </p>
                   </div>
-
-                  <span
-                    className={`text-xs px-2 py-1 rounded-full ${
-                      album.isShared
-                        ? "bg-blue-100 text-blue-700"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    {album.isShared ? "Shared" : "Private"}
-                  </span>
                 </div>
-              ))}
-            </div>
-          </div>
+
+                <div className="bg-neutral-800/60 rounded-xl p-4 flex gap-3 min-w-0">
+                  <Mail className="text-purple-400 shrink-0" size={20} />
+                  <div className="min-w-0">
+                    <p className="text-[11px] uppercase tracking-wide text-neutral-500">
+                      Email
+                    </p>
+                    <p className="font-semibold text-white truncate">
+                      {user?.email}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-neutral-800/60 rounded-xl p-4 flex gap-3 min-w-0">
+                  <Calendar className="text-purple-400 shrink-0" size={20} />
+                  <div className="min-w-0">
+                    <p className="text-[11px] uppercase tracking-wide text-neutral-500">
+                      Member Since
+                    </p>
+                    <p className="font-semibold text-white truncate">
+                      {"date"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-neutral-800/60 rounded-xl p-4 flex gap-3 min-w-0">
+                  <Award className="text-purple-400 shrink-0" size={20} />
+                  <div className="min-w-0">
+                    <p className="text-[11px] uppercase tracking-wide text-neutral-500">
+                      Role
+                    </p>
+                    <p className="font-semibold text-white truncate">
+                      {userDetails.role || "user"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-bold text-white mb-2">About</h3>
+                <p className="text-neutral-400 text-sm leading-relaxed break-words">
+                  {userDetails.about || "No details added yet."}
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-bold text-white mb-3">Hobbies</h3>
+
+                <div className="flex flex-wrap gap-2">
+                  {userDetails.hobbies?.length ? (
+                    userDetails.hobbies.map((hobby: string) => (
+                      <span
+                        key={hobby}
+                        className="bg-neutral-800 text-neutral-200 px-3 py-1.5 rounded-full text-sm flex items-center gap-1.5"
+                      >
+                        <Heart
+                          size={12}
+                          className="text-purple-400 fill-purple-400"
+                        />
+                        {hobby}
+                      </span>
+                    ))
+                  ) : (
+                    <p className="text-sm text-neutral-500">
+                      No hobbies added.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
+
+      <UserDetailsModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        initialData={selectedDetails}
+        onSuccess={(details) => {
+          setUserDetails(details);
+          setShowModal(false);
+        }}
+      />
     </div>
   );
 }

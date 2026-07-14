@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import type { Image } from "../../Types/types";
 import MetaRow from "../../components/MetaRow";
+import { validateDescription } from "../../utils/validators";
+import { showToastError } from "../../ToastServices/toastService";
 interface ImageDetailProps {
   data: Image;
   onToggleFavorite: () => void;
@@ -34,7 +36,11 @@ const ImageDetail = ({
   };
 
   const handlePost = async () => {
-    if (!commentText.trim()) return;
+    const commentsError = validateDescription(commentText);
+    if (commentsError) {
+      showToastError(commentsError);
+      return;
+    }
     setPosting(true);
     try {
       await onAddComment(commentText.trim());
