@@ -147,6 +147,7 @@ const AddImageModal: React.FC<AddImageModalProps> = ({
           name="person"
           value={imageData.person}
           onChange={handleChange}
+          required
         />
 
         <InputComponent
