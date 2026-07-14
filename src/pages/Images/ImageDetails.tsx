@@ -17,7 +17,8 @@ interface ImageDetailProps {
   onToggleFavorite: () => void;
   onDelete: () => void;
   onAddComment: (comment: string) => void;
-  onBack?: () => void;
+  onBack: () => void;
+  isOwner: boolean;
 }
 
 const ImageDetail = ({
@@ -25,6 +26,7 @@ const ImageDetail = ({
   onToggleFavorite,
   onDelete,
   onAddComment,
+  isOwner,
 }: ImageDetailProps) => {
   const [imageData, setImageData] = useState(data);
   const [commentText, setCommentText] = useState("");
@@ -80,6 +82,11 @@ const ImageDetail = ({
             <h2 className="text-xl font-semibold text-gray-900">
               {imageData.name}
             </h2>
+            {!isOwner && (
+              <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-700">
+                You can only add comments to this image.
+              </p>
+            )}
             <div className="flex items-center gap-2">
               <button
                 onClick={handleToggleFavorite}
@@ -150,7 +157,7 @@ const ImageDetail = ({
 
       {/* Discussion */}
       <div className="bg-white rounded-xl border border-gray-200 p-6 flex flex-col">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Discussion</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Comments</h3>
 
         <div className="flex-1 space-y-3 mb-4 overflow-y-auto max-h-64">
           {!imageData.comments?.length ? (

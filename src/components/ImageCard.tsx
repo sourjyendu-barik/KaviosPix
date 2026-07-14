@@ -14,6 +14,7 @@ const ImageCard = ({ image, isOwner }: ImageCardProps) => {
     navigate("/album/imageDetails", {
       state: {
         data: image,
+        isOwner: isOwner,
       },
     });
   };
@@ -57,14 +58,12 @@ const ImageCard = ({ image, isOwner }: ImageCardProps) => {
             </div>
           )}
         </div>
-        {isOwner && (
-          <button
-            onClick={() => onDetailClick()}
-            className="bg-gray-900 text-white rounded-full px-4 py-2 text-xs font-medium"
-          >
-            Detail
-          </button>
-        )}
+        <button
+          onClick={() => onDetailClick()}
+          className="bg-gray-900 text-white rounded-full px-4 py-2 text-xs font-medium"
+        >
+          Detail
+        </button>
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ const ImageDetailContainer = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-  const { data } = location.state;
+  const { data, isOwner } = location.state;
 
   const handleToggleFavorite = async () => {
     const newFavoriteStatus = !data.isFavorite;
@@ -73,6 +73,7 @@ const ImageDetailContainer = () => {
       onDelete={handleDelete}
       onAddComment={handleAddComment}
       onBack={() => navigate(-1)}
+      isOwner={isOwner}
     />
   );
 };

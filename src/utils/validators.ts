@@ -24,6 +24,7 @@ export const validateMaxLength = (
     ? null
     : `${fieldName} cannot exceed ${max} characters`;
 };
+
 export const validateSpecialCharacters = (
   value: string,
   fieldName: string,
@@ -36,6 +37,7 @@ export const validateSpecialCharacters = (
 
   return null;
 };
+
 export const validateAlbumName = (name: string): string | null => {
   return (
     validateRequired(name, "Name") ||
@@ -54,15 +56,25 @@ export const validateImageRequired = (file: File | null): string | null => {
   return file ? null : "Image is required";
 };
 
+// Extensions that are treated as JPEG by the browser's MIME sniffing
+// but are not actually plain jpg/png/gif and should be rejected.
+const MISLABELED_JPEG_EXTENSIONS = ["jfif", "pjpeg", "pjp"];
+
 export const validateFileType = (
   file: File | null,
   allowedTypes: string[],
 ): string | null => {
   if (!file) return null;
 
+  const extension = file.name.split(".").pop()?.toLowerCase() || "";
+
+  if (MISLABELED_JPEG_EXTENSIONS.includes(extension)) {
+    return "Only JPG, PNG and GIF images are allowed";
+  }
+
   return allowedTypes.includes(file.type)
     ? null
-    : "Only JPG, JPEG, PNG and WEBP images are allowed";
+    : "Only JPG, PNG and GIF images are allowed";
 };
 
 export const validateFileSize = (
@@ -107,7 +119,7 @@ export const validateImage = (file: File | null): string | null => {
       "image/jpeg",
       "image/jpg",
       "image/png",
-      "image/webp",
+      "image/gif",
     ]) ||
     validateFileSize(file, 5)
   );

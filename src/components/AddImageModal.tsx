@@ -140,7 +140,12 @@ const AddImageModal: React.FC<AddImageModalProps> = ({
       closeOnBackdropClick={!loading}
     >
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input type="file" accept="image/*" onChange={handleChange} required />
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/gif"
+          onChange={handleChange}
+          required
+        />
 
         <InputComponent
           placeholder="Person"
