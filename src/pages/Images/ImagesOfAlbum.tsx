@@ -10,13 +10,13 @@ import {
   fetchFavoriteImagesAsync,
   fetchImagesByTagsAsync,
   clearImages,
+  buildImagesCacheKey,
 } from "./images";
-
 interface LocationState {
   name: string;
   description?: string;
   sharedWith?: string[];
-  type: "all" | "favorite" | "tags";
+  type: "all" | "favorites" | "tags";
   tags?: string[];
   isOwner: boolean;
   id: string;
@@ -31,6 +31,7 @@ const ImagesOfAlbum = () => {
     data: images,
     status,
     error,
+    lastFetchKey,
   } = useAppSelector((state) => state.images);
   const { name, description, sharedWith, type, tags, isOwner, id } =
     (location.state as LocationState) || {};
@@ -39,9 +40,17 @@ const ImagesOfAlbum = () => {
 
   useEffect(() => {
     if (!albumId) return;
+    if (type === "tags" && (!tags || tags.length === 0)) {
+      dispatch(clearImages());
+      return;
+    }
 
+    // Normalize "favorite" -> "favorites" to match buildImagesCacheKey's FilterTab type
+    const cacheType = type;
+    const currentKey = buildImagesCacheKey(albumId, cacheType, tags);
+    if (lastFetchKey === currentKey) return;
     switch (type) {
-      case "favorite":
+      case "favorites":
         dispatch(fetchFavoriteImagesAsync(albumId));
         break;
       case "tags":
@@ -89,7 +98,7 @@ const ImagesOfAlbum = () => {
           <p className="text-gray-500 text-sm">
             {type === "tags"
               ? "No images found for these tags."
-              : type === "favorite"
+              : type === "favorites"
                 ? "No favorite images yet."
                 : "No images found."}
           </p>

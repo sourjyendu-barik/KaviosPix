@@ -96,7 +96,15 @@ export const shareAlbumAsyn = createAsyncThunk(
 const albumSlice = createSlice({
   name: "albums",
   initialState,
-  reducers: {},
+  reducers: {
+    setAlbumUrl: (state, action) => {
+      const { url, albumId } = action.payload;
+      const index = state.data.findIndex((album) => album._id === albumId);
+      if (index !== -1) {
+        state.data[index].url = url;
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAlbumsAsyn.pending, (state) => {
@@ -147,3 +155,4 @@ const albumSlice = createSlice({
   },
 });
 export default albumSlice.reducer;
+export const { setAlbumUrl } = albumSlice.actions;

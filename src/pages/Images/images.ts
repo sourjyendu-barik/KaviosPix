@@ -8,21 +8,28 @@ import {
   deleteImage,
   addCommentToImage,
 } from "../../api";
-import { type AddImageProps } from "../../Types/types";
-
+import { type AddImageProps, type FilterTab } from "../../Types/types";
 type Status = "idle" | "loading" | "success" | "error";
 
 interface ImageState {
   data: any[];
   error: string | null;
   status: Status;
+  lastFetchKey: string | null;
 }
 
 const initialState: ImageState = {
   data: [],
   error: null,
   status: "idle",
+  lastFetchKey: null,
 };
+
+export const buildImagesCacheKey = (
+  albumId: string,
+  type: FilterTab,
+  tags?: string[],
+): string => `${albumId}::${type}::${tags?.slice().sort().join(",") ?? ""}`;
 
 // ---- Thunks ----
 
@@ -45,7 +52,10 @@ export const fetchAllImagesAsync = createAsyncThunk(
   async (albumId: string, { rejectWithValue }) => {
     try {
       const response = await viewImagesOfAlbum(albumId);
-      return response.data;
+      return {
+        data: response.data,
+        cacheKey: buildImagesCacheKey(albumId, "all"),
+      };
     } catch (error: any) {
       return rejectWithValue(
         error?.response?.data?.message || "Something Went Wrong",
@@ -59,7 +69,10 @@ export const fetchFavoriteImagesAsync = createAsyncThunk(
   async (albumId: string, { rejectWithValue }) => {
     try {
       const response = await viewFavoriteImagesOfAlBum(albumId);
-      return response.data;
+      return {
+        data: response.data,
+        cacheKey: buildImagesCacheKey(albumId, "favorites"),
+      };
     } catch (error: any) {
       return rejectWithValue(
         error?.response?.data?.message || "Something Went Wrong",
@@ -76,7 +89,10 @@ export const fetchImagesByTagsAsync = createAsyncThunk(
   ) => {
     try {
       const response = await viewImagesByTags(albumId, tags);
-      return response.data;
+      return {
+        data: response.data,
+        cacheKey: buildImagesCacheKey(albumId, "tags", tags),
+      };
     } catch (error: any) {
       return rejectWithValue(
         error?.response?.data?.message || "Something Went Wrong",
@@ -154,6 +170,7 @@ const imageSlice = createSlice({
       state.data = [];
       state.status = "idle";
       state.error = null;
+      state.lastFetchKey = null;
     },
   },
   extraReducers: (builder) => {
@@ -181,7 +198,8 @@ const imageSlice = createSlice({
       })
       .addCase(fetchAllImagesAsync.fulfilled, (state, action) => {
         state.status = "success";
-        state.data = action.payload?.data ?? [];
+        state.data = action.payload.data?.data ?? [];
+        state.lastFetchKey = action.payload.cacheKey; // NEW
       })
       .addCase(fetchAllImagesAsync.rejected, (state, action) => {
         state.status = "error";
@@ -198,7 +216,8 @@ const imageSlice = createSlice({
       })
       .addCase(fetchFavoriteImagesAsync.fulfilled, (state, action) => {
         state.status = "success";
-        state.data = action.payload?.data ?? [];
+        state.data = action.payload.data?.data ?? [];
+        state.lastFetchKey = action.payload.cacheKey; // NEW
       })
       .addCase(fetchFavoriteImagesAsync.rejected, (state, action) => {
         state.status = "error";
@@ -215,7 +234,8 @@ const imageSlice = createSlice({
       })
       .addCase(fetchImagesByTagsAsync.fulfilled, (state, action) => {
         state.status = "success";
-        state.data = action.payload?.data ?? [];
+        state.data = action.payload.data?.data ?? [];
+        state.lastFetchKey = action.payload.cacheKey; // NEW
       })
       .addCase(fetchImagesByTagsAsync.rejected, (state, action) => {
         state.status = "error";

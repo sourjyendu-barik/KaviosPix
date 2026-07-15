@@ -11,7 +11,6 @@ import {
   showToastSuccess,
   showToastError,
 } from "../../ToastServices/toastService";
-
 const ImageDetailContainer = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
@@ -28,9 +27,6 @@ const ImageDetailContainer = () => {
           isFavorite: newFavoriteStatus,
         }),
       ).unwrap();
-      showToastSuccess(
-        newFavoriteStatus ? "Added to favorites" : "Removed from favorites",
-      );
     } catch (err: any) {
       const message =
         typeof err === "string"
@@ -38,16 +34,20 @@ const ImageDetailContainer = () => {
           : err?.message || "Failed to update favorite status";
       showToastError(message);
     }
+    // } finally {
+    //   setLoaderMessage(null);
+    // }
   };
   const handleDelete = async () => {
     try {
       await dispatch(
         deleteImageAsync({ albumId: data.albumId, imageId: data._id }),
       ).unwrap();
-      showToastSuccess("Image deleted successfully");
       navigate(-1);
+      showToastSuccess("Image deleted successfully");
     } catch (err: any) {
       showToastError(err || "Failed to delete image");
+    } finally {
     }
   };
 
@@ -67,14 +67,16 @@ const ImageDetailContainer = () => {
   };
 
   return (
-    <ImageDetail
-      data={data}
-      onToggleFavorite={handleToggleFavorite}
-      onDelete={handleDelete}
-      onAddComment={handleAddComment}
-      onBack={() => navigate(-1)}
-      isOwner={isOwner}
-    />
+    <>
+      <ImageDetail
+        data={data}
+        onToggleFavorite={handleToggleFavorite}
+        onDelete={handleDelete}
+        onAddComment={handleAddComment}
+        onBack={() => navigate(-1)}
+        isOwner={isOwner}
+      />
+    </>
   );
 };
 

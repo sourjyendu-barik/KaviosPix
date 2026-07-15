@@ -12,13 +12,13 @@ import {
   validateTags,
   validateImage,
 } from "../utils/validators";
+import { setAlbumUrl } from "../pages/Dashboard/album";
 interface AddImageModalProps {
   isOpen: boolean;
   onClose: () => void;
   albumId: string;
   name: string;
 }
-
 const AddImageModal: React.FC<AddImageModalProps> = ({
   isOpen,
   onClose,
@@ -88,7 +88,7 @@ const AddImageModal: React.FC<AddImageModalProps> = ({
     setLoading(true);
 
     try {
-      await dispatch(
+      const result = await dispatch(
         addImageAsync({
           albumId,
           imageData: {
@@ -99,7 +99,12 @@ const AddImageModal: React.FC<AddImageModalProps> = ({
           },
         }),
       ).unwrap();
-
+      dispatch(
+        setAlbumUrl({
+          albumId: result.data.albumId,
+          url: result.data.url,
+        }),
+      );
       showToastSuccess("Image uploaded successfully");
 
       setImageData({

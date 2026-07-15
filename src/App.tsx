@@ -11,7 +11,7 @@ const App = () => {
       <RouterProvider router={router}></RouterProvider>
       <ToastContainer
         position="top-center"
-        autoClose={3000}
+        autoClose={1000}
         hideProgressBar={false}
         newestOnTop
         closeOnClick

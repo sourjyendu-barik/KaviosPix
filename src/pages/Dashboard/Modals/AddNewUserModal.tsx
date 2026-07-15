@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "../../../components/Modal";
 import SelectUsers from "../../../components/SelectUsers";
 import { useAppDispatch } from "../../../hooks/albumHooks";
@@ -11,7 +11,7 @@ import {
 interface AddUsersInAlbumProps {
   isOpen: boolean;
   onClose: () => void;
-  userList: string[];
+  sharedUsers: string[];
   albumId: string;
   albumName: string;
 }
@@ -19,21 +19,21 @@ interface AddUsersInAlbumProps {
 const AddNewUserModal: React.FC<AddUsersInAlbumProps> = ({
   isOpen,
   onClose,
-  userList,
+  sharedUsers,
   albumId,
   albumName,
 }) => {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<string[] | []>([]);
 
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedUsers(sharedUsers ?? []);
+    }
+  }, [isOpen, sharedUsers]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (selectedUsers.length === 0) {
-      showToastError("Please select at least one user");
-      return;
-    }
 
     setLoading(true);
 
@@ -41,7 +41,7 @@ const AddNewUserModal: React.FC<AddUsersInAlbumProps> = ({
       await dispatch(
         shareAlbumAsyn({ albumId, emails: selectedUsers }),
       ).unwrap();
-      showToastSuccess("Users added successfully");
+      showToastSuccess("Users updated successfully");
       setSelectedUsers([]);
       onClose();
     } catch (error: any) {
@@ -69,7 +69,6 @@ const AddNewUserModal: React.FC<AddUsersInAlbumProps> = ({
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         <SelectUsers
-          users={userList}
           value={selectedUsers}
           onChange={setSelectedUsers}
           label="Select users to add"
@@ -86,7 +85,7 @@ const AddNewUserModal: React.FC<AddUsersInAlbumProps> = ({
           </button>
           <button
             type="submit"
-            disabled={loading || selectedUsers.length === 0}
+            disabled={loading}
             className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {loading ? "Adding..." : "Add Users"}

@@ -42,7 +42,7 @@ export const validateAlbumName = (name: string): string | null => {
   return (
     validateRequired(name, "Name") ||
     validateMinLength(name, 3, "Name") ||
-    validateMaxLength(name, 50, "Name") ||
+    validateMaxLength(name, 10, "Name") ||
     validateSpecialCharacters(name, "Name")
   );
 };
@@ -115,12 +115,7 @@ export const validateTags = (tags: string): string | null => {
 export const validateImage = (file: File | null): string | null => {
   return (
     validateImageRequired(file) ||
-    validateFileType(file, [
-      "image/jpeg",
-      "image/jpg",
-      "image/png",
-      "image/gif",
-    ]) ||
+    validateFileType(file, ["image/jpeg", "image/png", "image/gif"]) ||
     validateFileSize(file, 5)
   );
 };

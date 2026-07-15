@@ -1,12 +1,13 @@
 import { useState } from "react";
 import {
-  Heart,
+  Star,
   HardDrive,
   User,
   Calendar,
   Tag,
   MessageSquare,
   Trash2,
+  ArrowLeft,
 } from "lucide-react";
 import type { Image } from "../../Types/types";
 import MetaRow from "../../components/MetaRow";
@@ -27,6 +28,7 @@ const ImageDetail = ({
   onDelete,
   onAddComment,
   isOwner,
+  onBack,
 }: ImageDetailProps) => {
   const [imageData, setImageData] = useState(data);
   const [commentText, setCommentText] = useState("");
@@ -67,6 +69,13 @@ const ImageDetail = ({
   return (
     <div className="max-w-5xl mx-auto">
       {/* Header */}
+      <button
+        onClick={onBack}
+        className="flex items-center gap-2 mb-4 text-sm font-semibold text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
+      >
+        <ArrowLeft size={16} />
+        Back to album
+      </button>
       {/* Image + Metadata */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div className="rounded-xl overflow-hidden bg-gray-100">
@@ -82,34 +91,31 @@ const ImageDetail = ({
             <h2 className="text-xl font-semibold text-gray-900">
               {imageData.name}
             </h2>
-            {!isOwner && (
-              <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-700">
-                You can only add comments to this image.
-              </p>
+            {isOwner && (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleToggleFavorite}
+                  className={`rounded-full p-2 transition-colors ${
+                    imageData.isFavorite ? "bg-yellow-100" : "bg-gray-100"
+                  }`}
+                >
+                  <Star
+                    size={18}
+                    className={
+                      imageData.isFavorite
+                        ? "text-yellow-500 fill-yellow-500"
+                        : "text-gray-700"
+                    }
+                  />
+                </button>
+                <button
+                  onClick={onDelete}
+                  className="rounded-full p-2 bg-gray-100 text-gray-500 hover:text-red-600 hover:bg-red-50 transition-colors"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
             )}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleToggleFavorite}
-                className={`rounded-full p-2 transition-colors ${
-                  imageData.isFavorite ? "bg-yellow-100" : "bg-gray-100"
-                }`}
-              >
-                <Heart
-                  size={18}
-                  className={
-                    imageData.isFavorite
-                      ? "fill-yellow-400 text-yellow-400"
-                      : "text-gray-400"
-                  }
-                />
-              </button>
-              <button
-                onClick={onDelete}
-                className="rounded-full p-2 bg-gray-100 text-gray-500 hover:text-red-600 hover:bg-red-50 transition-colors"
-              >
-                <Trash2 size={18} />
-              </button>
-            </div>
           </div>
 
           <div className="space-y-5">

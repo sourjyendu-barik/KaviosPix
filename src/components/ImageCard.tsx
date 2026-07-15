@@ -44,7 +44,7 @@ const ImageCard = ({ image, isOwner }: ImageCardProps) => {
         </button>
       </div>
 
-      {/* Name / location / detail button */}
+      {/* Name  / detail button */}
       <div className="flex items-center justify-between px-3.5 py-3">
         <div>
           {image.name && (

@@ -89,7 +89,7 @@ const AlbumsPage: React.FC<AlbumsPageProps> = ({ albums }) => {
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {albums.map((album, index) => (
           <AlbumCard
             key={album._id}
@@ -110,7 +110,7 @@ const AlbumsPage: React.FC<AlbumsPageProps> = ({ albums }) => {
           onClose={handleCloseModal}
           albumId={selectedAlbum.id}
           albumName={selectedAlbum.name}
-          userList={selectedAlbum.users ?? []}
+          sharedUsers={selectedAlbum.users ?? []}
         />
       )}
 
