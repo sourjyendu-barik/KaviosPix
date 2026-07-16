@@ -8,9 +8,10 @@ const DashboardHeader: React.FC<DashBoardHeaderProps> = ({
   return (
     <section className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
       <div className="space-y-2">
-        <h1 className="font-sans text-4xl md:text-5xl font-extrabold tracking-tight text-primary">
+        <h1 className="font-sans text-4xl md:text-5xl font-extrabold tracking-tight text-black dark:text-white">
           Albums
         </h1>
+
         <p className="font-sans text-base md:text-lg text-gray-text max-w-2xl leading-relaxed">
           Organize your visual legacy. Effortlessly manage personal memories and
           collaborative collections in one refined workspace.

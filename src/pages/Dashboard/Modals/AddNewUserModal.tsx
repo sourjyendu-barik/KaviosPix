@@ -64,7 +64,7 @@ const AddNewUserModal: React.FC<AddUsersInAlbumProps> = ({
       onClose={handleClose}
       title="Add Users to Album"
       subtitle={`Sharing "${albumName}"`}
-      size="md"
+      size="xl"
       closeOnBackdropClick={!loading}
     >
       <form onSubmit={handleSubmit} className="space-y-6">

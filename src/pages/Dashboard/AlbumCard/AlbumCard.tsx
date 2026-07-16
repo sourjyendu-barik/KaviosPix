@@ -77,7 +77,7 @@ const AlbumCard: React.FC<AlbumProps> = ({
   };
 
   return (
-    <div className="group bg-white rounded-2xl overflow-hidden border border-border-subtle/50 hover-card-glow cursor-pointer flex flex-col h-full relative">
+    <div className="group glass-nav rounded-2xl overflow-hidden border border-border-subtle/50 hover-card-glow cursor-pointer flex flex-col h-full relative">
       {message && (
         <div
           className="absolute inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center transition-all duration-300 rounded-2xl"

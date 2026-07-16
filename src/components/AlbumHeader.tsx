@@ -17,7 +17,7 @@ const AlbumHeader: React.FC<AlbumHeaderProps> = ({
   type,
 }) => {
   return (
-    <div className="mb-8 rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <div className="mb-8 rounded-2xl border border-gray-200 glass-nav">
       <div className="p-6">
         <div className="flex items-start justify-between flex-wrap gap-6">
           {/* Left */}

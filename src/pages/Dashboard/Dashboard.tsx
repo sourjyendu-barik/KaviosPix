@@ -7,7 +7,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className="fade-in">
+      <div>
         <DashboardHeader
           onAddNewAlbumTrigger={() => setAddAlbumModalOpen(true)}
         />

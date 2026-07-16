@@ -86,7 +86,7 @@ const ImageDetail = ({
           />
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-6 relative">
+        <div className="glass-nav rounded-xl border border-gray-200 p-6 relative">
           <div className="flex items-start justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-900">
               {imageData.name}
@@ -162,7 +162,7 @@ const ImageDetail = ({
       </div>
 
       {/* Discussion */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 flex flex-col">
+      <div className="glass-nav rounded-xl border border-gray-200 p-6 flex flex-col">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Comments</h3>
 
         <div className="flex-1 space-y-3 mb-4 overflow-y-auto max-h-64">
@@ -173,8 +173,11 @@ const ImageDetail = ({
             </div>
           ) : (
             imageData.comments.map((comment, idx) => (
-              <div key={idx} className="bg-gray-50 rounded-lg px-3 py-2">
-                <p className="text-sm text-gray-600">{comment}</p>
+              <div
+                key={idx}
+                className="rounded-lg px-3 py-2 border border-border-subtle"
+              >
+                <p className="text-sm text-primary mb-1">{comment}</p>
               </div>
             ))
           )}

@@ -43,7 +43,7 @@ export default function Footer() {
 
   return (
     <>
-      <footer className="bg-white border-t border-[#e2e2e4] w-full py-10 mt-16">
+      <footer className="glass-nav border-t border-[#e2e2e4] w-full py-10 mt-16">
         <div className="flex flex-col md:flex-row items-center justify-between px-6 max-w-[1200px] mx-auto gap-6">
           <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 text-center md:text-left">
             <span className="font-sans font-black text-lg tracking-tighter text-[#1d1d1f]">

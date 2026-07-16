@@ -13,7 +13,10 @@ const api = axios.create({
 export const googleAuth = (code: string) => api.post(`/auth/google`, { code });
 
 export const getMe = () => api.get("/user/me");
-
+export const findEmails = (q: string) =>
+  api.get("/user/findEmail", {
+    params: { q },
+  });
 export const logoutUser = () => api.post("/user/logout");
 
 //album api

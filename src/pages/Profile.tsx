@@ -41,8 +41,7 @@ export default function ProfilePage() {
     ? new Date(user.joined).toLocaleDateString()
     : "Unknown";
   return (
-    // change the outer wrapper
-    <div className="min-h-screen bg-white py-2">
+    <div className="min-h-screen glass-nav py-2">
       <div className="max-w-3xl mx-auto px-4 space-y-6">
         {/* Profile Card */}
         <div className="rounded-2xl bg-neutral-900 border border-neutral-800/60 shadow-xl shadow-black/40 text-white p-6 sm:p-8">
