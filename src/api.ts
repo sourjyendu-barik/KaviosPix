@@ -5,7 +5,7 @@ import {
   type UserDetails,
 } from "./Types/types";
 const api = axios.create({
-  // baseURL: "http://localhost:4000",
+  //baseURL: "http://localhost:4000",
   baseURL: "https://kavio-px-backend.vercel.app",
   withCredentials: true,
 });
@@ -13,10 +13,12 @@ const api = axios.create({
 export const googleAuth = (code: string) => api.post(`/auth/google`, { code });
 
 export const getMe = () => api.get("/user/me");
-export const findEmails = (q: string) =>
-  api.get("/user/findEmail", {
+export const findEmails = (q: string) => {
+  console.log("findEmails is running");
+  return api.get("/user/findEmail", {
     params: { q },
   });
+};
 export const logoutUser = () => api.post("/user/logout");
 
 //album api
